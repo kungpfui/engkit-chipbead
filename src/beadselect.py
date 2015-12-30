@@ -93,10 +93,20 @@ class BeadData(object):
 def code2imp(code):
 	return float(code[:2]) * 10.0**float(code[2])
 
+
 def in_range(value, range):
 	return range[0] <= value <= range[1]
 
+
 def filescan(size, impedance, inductance=None):
+	""" Scan all files defined by @parts and find size, impedance
+	    and optional inductance matching parts.
+
+	@param size        Part size as string. Possible values are as defined by @scmap.
+	@param impedance   Tuple (Zmin, Zmax)
+	@param inductance  Tuple (Lmin, Lmax) or None
+	"""
+
 	bead_data_lst = []
 
 	for filename in parts:
@@ -142,41 +152,64 @@ def filescan(size, impedance, inductance=None):
 
 import matplotlib.pyplot as plt
 
-def eng_fmt(value):
+def eng_fmt(value, fmt='.3'):
+	""" Float formating which engineers like, 10**(3*n)
+	"""
 	n = 0
-	while value < 1.0:
-		value *= 1000.0
-		n += 1
-	expo = {0:'', 1:'m', 2:'u', 3:'n', 4:'p'}
-	return '{:.3f}{}'.format(value, expo[n])
+	while not (1.0 <= value < 1000.0):
+		if value >= 1000.0:
+			value *= 1e-3
+			n += 3
+		else:
+			value *= 1e3
+			n -= 3
+
+	expo = {12:'P', 9:'T', 6:'G', 3:'M', 0:'',-3:'m', -6:'u', -9:'n', -12:'p', -15:'f'}
+	return ('{:%sf}{}' % fmt).format(value, expo[n])
 
 
-def plot(bead_data, frange=(1e6, 1e9), rmin=1.0):
+def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
+	""" Plots the bead_data
+
+	@param bead_data   List,Tuple of BeadData objects
+	@param frange      List,Tuple (f-min, f-max), diagram's frequency limits
+	@param rmin        diagram's minimum resistance
+	@param scale       diagram scaling, possible values are [ loglog | linlog | loglin | linlin ]
+	"""
+
 	fig = plt.figure()
 	cols = int(math.sqrt ( len(bead_data) ))
 	for i, bdata in enumerate(bead_data):
 		ax = plt.subplot((len(bead_data) + cols-1) / cols, cols, 1+i)
 		ax.grid()
 
-		ax.loglog(bdata.MHz, bdata.R, 'b')
-		ax.loglog(bdata.MHz, bdata.X, 'g')
-		ax.loglog(bdata.MHz, bdata.Z, 'r')
+		ax_scale = dict(loglog=ax.loglog, loglin=ax.semilogx, linlog=ax.semilogy, linlin=ax.plot)[scale]
+		ax_scale(bdata.MHz, bdata.R, 'b')
+		ax_scale(bdata.MHz, bdata.X, 'g')
+		ax_scale(bdata.MHz, bdata.Z, 'r')
 
 		ax.set_xlabel('MHz')
 		ax.set_ylim(ymin=rmin)
 		ax.set_xlim(xmin=frange[0]*1e-6, xmax=frange[1]*1e-6 )
 
 		#~ ax.set_title(bdata.name)
-		ax.text(0.95, 0.01, bdata.name,
-			verticalalignment='bottom', horizontalalignment='right',
+		ax.text(0.05, 0.95, bdata.name,
+			verticalalignment='top', horizontalalignment='left',
 			transform=ax.transAxes,
-			fontsize=8)
+			fontsize=10)
 	plt.show()
 
 
 def info(bead_data):
+	""" Prints some bead data to stdout.
+	- inductance @ 1MHz
+	- impedance @ 1, 10 and 100MHz
+
+	@param bead_data   List,Tuple of BeadData objects
+	"""
+
 	for bdata in bead_data:
-		print ('{:<16}: L = {}H, Z = {:>.3f} @1MHz, {:>.3f} @10MHz, {:>.3f} @100MHz'.format(bdata.name,
+		print ('{:<16}: L = {}H, Z = {:>.2f} @1MHz, {:>.2f} @10MHz, {:>.2f} @100MHz'.format(bdata.name,
 				eng_fmt(bdata.L()),
 				abs(bdata.z(1e6)),
 				abs(bdata.z(10e6)),
