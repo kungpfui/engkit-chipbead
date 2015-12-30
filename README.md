@@ -72,7 +72,7 @@ BLM18PG331SN1   : L = 2.473uH, Z = 15.605 @1MHz, 110.761 @10MHz, 341.590 @100MHz
 
 and a graphical representation of the bead's data where |Z|, X and R are visible.
 
-![Bead Selector Window][images/pyBeadSelector.png]
+![Bead Selector Window][pyBeadSelector.png]
 
 
 Notice
@@ -84,8 +84,6 @@ If you are not familiar with [Python] a better starting point is [Anaconda].
 [Anaconda] is Python with more scientific libraries installed already and therefore there are no installation hassles on windows systems.
 
 
-[pyBeadSelector.png]: https://github.com/kungpfui//master/images/icon48.png "Logo Title Text 2"
-
 [Murata]: http://www.murata.com/en-us/tool/sparameter/ferritebead/
 [TDK]: https://product.tdk.com/info/en/technicalsupport/tvcl/general/beads.html
 [Tayo Yuden]: http://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
@@ -93,3 +91,5 @@ If you are not familiar with [Python] a better starting point is [Anaconda].
 [Python]: http://www.python.org
 [Matplotlib]: http://matplotlib.org/
 [Anaconda]: https://www.continuum.io
+
+[pyBeadSelector.png]: https://github.com/kungpfui/pyBeadSelector/blob/master/images/pyBeadSelector.png "Bead Selector Window"
