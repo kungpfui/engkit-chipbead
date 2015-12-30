@@ -81,7 +81,7 @@ Notice
 - [Matplotlib] needed (pip install matplotlib).
 
 If you are not familiar with [Python] a better starting point is [Anaconda].
-[Anaconda] is Python with more scientific libraries installed already and therefore there are no installation hassles on windows systems.
+[Anaconda] is Python with much more installed scientific libraries and therefore there are no installation hassles on Windows systems.
 
 
 [Murata]: http://www.murata.com/en-us/tool/sparameter/ferritebead/
