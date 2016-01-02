@@ -13,7 +13,7 @@ param = dict(
 	impedance  = (270, 360),
 
 	# optional, L @ 1MHz
-	inductance = (1.8e-6, 2.5e-6)
+	#~ inductance = (1.8e-6, 2.5e-6)
 )
 
 

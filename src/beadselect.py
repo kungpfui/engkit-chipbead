@@ -3,55 +3,14 @@
 #
 # $Id$
 
-from collections import namedtuple
+
 import os, sys, re
 import math, cmath
 import zipfile
-
-
-NameConv = namedtuple('NameConv', ['regex_fn','scmap'])
-
-manufacturer = dict(
-	murata     = NameConv(r'.*(?P<size_code>\d{2})[A-Z]{2}(?P<imp_code>\d{3}).*',
-	             {'0201' : '03', '0402' : '15', '0603' : '18', '0805' : '21', '1206' : '31'} ),
-
-	tayo_yuden = NameConv(r'.*(?P<size_code>\d{4})_.*(?P<imp_code>\d{3}).*',
-	             {'0402' : '1005', '0603' : '1608', '0805' : '2012'} ),
-
-	tdk        = NameConv(r'.*(?P<size_code>\d{4})[A-Z](?P<imp_code>\d{3}).*',
-	             {'0402' : '1005', '0603' : '1608', '0805' : '2012'} ),
-
-	wuerth     = NameConv(r'^(?P<size_code>\d{7}).*',
-	             {'0402' : '7427927', '0603' : '7427926', '0805' : '7427920'} ),
-)
-
-parts = {
-	# murata parts, http://www.murata.com/en-us/tool/sparameter/ferritebead
-	'blm15_s_v10.zip': manufacturer['murata'],
-	'blm18_s_v10.zip': manufacturer['murata'],
-	'blm21_s_v10.zip': manufacturer['murata'],
-
-	# TDK parts, https://product.tdk.com/info/en/technicalsupport/tvcl/general/beads.html
-	'beads_commercial_signal_mmz1005_spara.zip': manufacturer['tdk'],
-	'beads_commercial_signal_mmz1005-e_spara.zip': manufacturer['tdk'],
-	'beads_commercial_signal_mmz1005-v_spara.zip': manufacturer['tdk'],
-	'beads_commercial_power_mpz1005_spara.zip': manufacturer['tdk'],
-	'beads_commercial_signal_mmz1608_spara.zip': manufacturer['tdk'],
-	'beads_commercial_power_mpz1608_spara.zip': manufacturer['tdk'],
-
-	# Tayo Yuden parts, http://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
-	'BK.zip': manufacturer['tayo_yuden'],
-	'BKP.zip': manufacturer['tayo_yuden'],
-	'FBM.zip': manufacturer['tayo_yuden'],
-
-	# Würth parts, http://www.we-online.de/web/de/electronic_components/toolbox_pbs/S_Parameter_1.php
-	'WE_CBF_0402.zip': manufacturer['wuerth'],
-	'WE_CBF_0603.zip': manufacturer['wuerth'],
-	'WE_CBF_0805.zip': manufacturer['wuerth'],
-}
-
-
 from touchstone import Touchstone
+from beadparts import parts
+
+
 class BeadData(object):
 	def __init__(self, fileobj):
 		self.name = os.path.basename(fileobj.name)[:-4]
@@ -65,13 +24,13 @@ class BeadData(object):
 				self._z.append(d.Z)
 
 	@property
-	def MHz(self): return [ f * 1e-6 for f in self._f]
+	def MHz(self): return [ f * 1e-6 for f in self._f ]
 	@property
-	def R(self): return [ z.real for z in self._z]
+	def R(self): return [ z.real for z in self._z ]
 	@property
-	def X(self): return [ z.imag for z in self._z]
+	def X(self): return [ z.imag for z in self._z ]
 	@property
-	def Z(self): return [ abs(z) for z in self._z]
+	def Z(self): return [ abs(z) for z in self._z ]
 
 	def _findex(self, frequency):
 		for i, f in enumerate(self._f):
@@ -79,18 +38,52 @@ class BeadData(object):
 				return i
 
 	def L(self, f=1e6):
+		"""Inductance at given frequency. Uses linear interpolation.
+
+		@param f   Frequency as float
+		@ret inductance as float or None
+		"""
 		z = self.z(f)
 		return z.imag / (2.0*cmath.pi*f) if z is not None else None
 
 	def z(self, f=100e6):
+		"""Complex impedance at given frequency. uses linear interpolation
+
+		@param f   Frequency as float
+		@ret complex impedance or None
+		"""
 		i = self._findex(f)
 		if i is None: return
 		if i == 0: return self._z[0]
 		delta_f = (f - self._f[i]) / (self._f[i-1] - self._f[i])
 		return self._z[i-1] + delta_f * (self._z[i-1] - self._z[i])
 
+	def xpoint(self):
+		"""X-R cross point (interpolated)
+
+		@ret frequency as float or None
+		"""
+		for i, (f, z) in enumerate(zip(self._f, self._z)):
+			#~ print (f,z)
+			if z.real >= z.imag:
+				# no cross of real and imag
+				if i == 0: return f if z.real == z.imag else None
+				dy = self._z[i] - self._z[i-1]
+				xy1 = self._z[i-1] * self._f[i]
+				xy2 = self._z[i] * self._f[i-1]
+				try:
+					fx = ((xy1.real - xy2.real) - (xy1.imag - xy2.imag)) \
+						/ (dy.imag - dy.real)
+				except ZeroDivisionError:
+					return None
+
+				return f
+
 
 def code2imp(code):
+	"""Most parts have it value encoded with three decimals numbers
+	where the first two numbers are the matissa and the third the exponent.
+	"""
 	return float(code[:2]) * 10.0**float(code[2])
 
 
@@ -149,22 +142,24 @@ def filescan(size, impedance, inductance=None):
 	return bead_data_lst
 
 
-
 import matplotlib.pyplot as plt
+
 
 def eng_fmt(value, fmt='.3'):
 	""" Float formating which engineers like, 10**(3*n)
 	"""
+	if value is None: return str(None)
+
 	n = 0
-	while not (1.0 <= value < 1000.0):
-		if value >= 1000.0:
+	while not (1.0 <= abs(value) < 1000.0):
+		if abs(value) >= 1000.0:
 			value *= 1e-3
 			n += 3
 		else:
 			value *= 1e3
 			n -= 3
 
-	expo = {12:'P', 9:'T', 6:'G', 3:'M', 0:'',-3:'m', -6:'u', -9:'n', -12:'p', -15:'f'}
+	expo = {15:'P', 12:'T', 9:'G', 6:'M', 3:'k', 0:'',-3:'m', -6:'u', -9:'n', -12:'p', -15:'f'}
 	return ('{:%sf}{}' % fmt).format(value, expo[n])
 
 
@@ -188,29 +183,34 @@ def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
 		ax_scale(bdata.MHz, bdata.X, 'g')
 		ax_scale(bdata.MHz, bdata.Z, 'r')
 
+
 		ax.set_xlabel('MHz')
 		ax.set_ylim(ymin=rmin)
 		ax.set_xlim(xmin=frange[0]*1e-6, xmax=frange[1]*1e-6 )
+
 
 		#~ ax.set_title(bdata.name)
 		ax.text(0.05, 0.95, bdata.name,
 			verticalalignment='top', horizontalalignment='left',
 			transform=ax.transAxes,
 			fontsize=10)
+
 	plt.show()
 
 
 def info(bead_data):
 	""" Prints some bead data to stdout.
 	- inductance @ 1MHz
+	- cross point frequency (X=R)
 	- impedance @ 1, 10 and 100MHz
 
 	@param bead_data   List,Tuple of BeadData objects
 	"""
 
 	for bdata in bead_data:
-		print ('{:<16}: L = {}H, Z = {:>.2f} @1MHz, {:>.2f} @10MHz, {:>.2f} @100MHz'.format(bdata.name,
-				eng_fmt(bdata.L()),
+		print ('{:<20}: L = {}H, X=R @ {}Hz, Z = {:>.2f} @1MHz, {:>.2f} @10MHz, {:>.2f} @100MHz'.format(bdata.name,
+				eng_fmt(bdata.L(1e6)),
+				eng_fmt(bdata.xpoint()),
 				abs(bdata.z(1e6)),
 				abs(bdata.z(10e6)),
 				abs(bdata.z(100e6)) )
