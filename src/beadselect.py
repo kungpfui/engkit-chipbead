@@ -63,21 +63,25 @@ class BeadData(object):
 
 		@ret frequency as float or None
 		"""
+		x_was_above_r = False
+
 		for i, (f, z) in enumerate(zip(self._f, self._z)):
-			#~ print (f,z)
-			if z.real >= z.imag:
-				# no cross of real and imag
-				if i == 0: return f if z.real == z.imag else None
-				dy = self._z[i] - self._z[i-1]
-				xy1 = self._z[i-1] * self._f[i]
-				xy2 = self._z[i] * self._f[i-1]
+
+			if z.imag > z.real:
+				# it's possible that at low frequency X is smaler than R, so ...
+				x_was_above_r = True
+
+			if x_was_above_r and z.real >= z.imag:
+				# calc the cross point
+				dz = self._z[i] - self._z[i-1]
+				dxy = self._f[i] * self._z[i-1] - self._z[i] * self._f[i-1]
 				try:
-					fx = ((xy1.real - xy2.real) - (xy1.imag - xy2.imag)) \
-						/ (dy.imag - dy.real)
+					fx = (dxy.real - dxy.imag) / (dz.imag - dz.real)
+					assert (fx <= f)
 				except ZeroDivisionError:
 					return None
 
-				return f
+				return fx
 
 
 def code2imp(code):
@@ -178,10 +182,11 @@ def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
 		ax = plt.subplot((len(bead_data) + cols-1) / cols, cols, 1+i)
 		ax.grid()
 
-		ax_scale = dict(loglog=ax.loglog, loglin=ax.semilogx, linlog=ax.semilogy, linlin=ax.plot)[scale]
-		ax_scale(bdata.MHz, bdata.R, 'b')
-		ax_scale(bdata.MHz, bdata.X, 'g')
-		ax_scale(bdata.MHz, bdata.Z, 'r')
+		ax.set_xscale(scale[:3])
+		ax.set_yscale(scale[3:])
+		ax.plot(bdata.MHz, bdata.R, 'b')
+		ax.plot(bdata.MHz, bdata.X, 'g')
+		ax.plot(bdata.MHz, bdata.Z, 'r')
 
 
 		ax.set_xlabel('MHz')
@@ -210,7 +215,7 @@ def info(bead_data):
 	for bdata in bead_data:
 		print ('{:<20}: L = {}H, X=R @ {}Hz, Z = {:>.2f} @1MHz, {:>.2f} @10MHz, {:>.2f} @100MHz'.format(bdata.name,
 				eng_fmt(bdata.L(1e6)),
-				eng_fmt(bdata.xpoint()),
+				eng_fmt(bdata.xpoint(), '.2'),
 				abs(bdata.z(1e6)),
 				abs(bdata.z(10e6)),
 				abs(bdata.z(100e6)) )

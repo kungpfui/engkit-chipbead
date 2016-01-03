@@ -121,7 +121,7 @@ class Touchstone(list):
 			self.fileobj = open(self.fileobj, 'r')
 
 		for line in self.fileobj:
-			line = line.decode('ascii').strip()
+			line = line.decode('latin-1').strip()
 			if line:
 				# comment
 				if line.startswith(('!')):
