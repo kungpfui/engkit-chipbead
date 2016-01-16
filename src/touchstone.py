@@ -3,6 +3,16 @@
 #
 # $Id$
 
+"""
+Quick n dirty touchstone file reader (.s2p only).
+
+Usage:
+ts = Touchstone('blub.s2p')
+for point in ts:
+    print(point)
+
+"""
+
 import re
 import cmath
 
@@ -46,13 +56,19 @@ class SPoint(object):
 
     @property
     def L(self):
-        """ inductance [H] of the elment.
-        """
+        "inductance [H] of the elment."
         return self.Z.imag / (cmath.pi * 2.0 * self.f)
 
     @property
     def Zin(self):
+        "Complex input impedance. Point of view is port 1"
         gamma = (1.0 + self.s11) / (1.0 - self.s11)
+        return gamma * self.fmt.z0
+
+    @property
+    def Zout(self):
+        "Complex input impedance. Point of view is port 2"
+        gamma = (1.0 + self.s22) / (1.0 - self.s22)
         return gamma * self.fmt.z0
 
     @property
@@ -68,8 +84,14 @@ class SPoint(object):
     def s22(self):
         return self.s[3]
 
+    def __str__(self):
+        'f={}, s={}'.format(self.f, self.s)
+
 
 class TouchstoneFormat(object):
+    """Touchstone value format regocnition and value normalization."""
+
+    # options mapping
     mapping = (
         {'HZ':1.0, 'KHZ':1E3, 'MHZ':1E6, 'GHZ':1E9},
         # at the moment only s-parameters are supported (no Z, Y, ....)
@@ -85,9 +107,20 @@ class TouchstoneFormat(object):
         float
         )
 
-    def __init__(self, sfmt):
+    def __init__(self, sparam_fmt):
+        """c'tor
+
+        @param sparam_fmt   s-parameter file format as tuple or string.
+                            = Touchstone's option line
+        """
+        if isinstance(sparam_fmt, str):
+            sparam_fmt = sparam_fmt.lstrip('#').strip().split()
+
         v = []
-        for action, value in zip(self.mapping, sfmt):
+        for action, value in zip(self.mapping, sparam_fmt):
+            # the keys of action dictionaries use capital letters only
+            value = value.upper()
+
             if isinstance(action, dict):
                 v.append(action[value])
             elif callable(action):
@@ -106,11 +139,15 @@ class TouchstoneFormat(object):
 
 
 class Touchstone(list):
-    """ Quick n dirty touchstone file reader (.s2p only)
+    """ Quick n dirty touchstone file reader (.s2p only).
+
+    Every s-parameter point is stored as list of complex s-parameter values.
+    Magnitude-Angle value-pairs are converted into real-imaginary value-pairs.
     """
 
     def __init__(self, fileobj):
         """c'tor
+
         @param fileobj 	file-like object
         """
         self.fileobj = fileobj
@@ -136,7 +173,7 @@ class Touchstone(list):
                     continue
                 # an option
                 if line.startswith(('#')):
-                    self.s_option = TouchstoneFormat(line[1:].strip().upper().split())
+                    self.s_option = TouchstoneFormat(line)
                     continue
                 # rest must/should be data
                 line = re.sub(r'\s+', ' ', line)
