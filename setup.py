@@ -24,8 +24,8 @@ with open(os.path.join(_package, '__init__.py')) as fid:
 
 
 LONG_DESCRIPTION = """
-engkit-chipbead is an open source chip bead comparison and selection
-tool implemented in the Python programming language.
+engkit-chipbead is an open source ferrite chip bead comparison and
+selection tool implemented in the Python programming language.
 """
 
 setup(name='engkit-chipbead',

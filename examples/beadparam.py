@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-"""Example code to find some matching chip ferrite beads."""
+"""Example code to find some matching ferrite chip beads."""
 
 import ekbead as bead
 

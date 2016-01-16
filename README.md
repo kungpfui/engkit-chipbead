@@ -1,33 +1,43 @@
-pyBeadSelector
-==============
-a ferrite bead selector written in Python.
+engkit-chipbead
+===============
+a ferrite chip bead selector written in the Python programming language.
 
 Ferrite beads are electronic components normally used for "noise" supression.
 They work like inductors but there ferrite material is designed to be
-lossy already at low frequencies. Some year ago, [INcompliance Magazine] has published an article about this topic.
+lossy already at low frequencies. Some year ago, [INcompliance Magazine]
+has published an article about this topic.
 
 The Problem
 -----------
-Sometimes I have to select ferrite beads for my electronic designs. Finding the right bead is a horrible task because the there are up to ten beads with equal impedance at the same frequency, size and supplied by the same manufacturer. Mostly each device has it's own datasheet and comparing, also against other manufacturers, becomes a nightmare.
+Sometimes I have to select ferrite beads for my electronic designs. Finding the right
+bead is a horrible task because the there are up to ten beads with equal impedance
+at the same frequency, size and supplied by the same manufacturer. Mostly each device
+has it's own datasheet and comparing, also against other manufacturers, becomes a nightmare.
 
 Ok, luckily some vendors publish their scattering parameters as touchstone files
-and even better you can get all files of a bead series as a single zip file. So there is not a lot of work to do to get the data. Why no using this collection and let the computer do a rough selection for you?
+and even better you can get all files of a bead series as a single zip file. So there
+is not a lot of work to do to get the data. Why no using this collection and let the
+computer do a rough selection for you?
 
 
 The Solution
 ------------
-Luckily (again) I've worked with touchstone files in the past. I've used them to calculate some impedance matching networks at 2.4Ghz where the best real-world-part solution was determined by brute force.
+Luckily (again) I've worked with touchstone files in the past. I've used them to
+calculate some impedance matching networks at 2.4Ghz where the best real-world-part
+solution was determined by brute force.
 
-I write such little tools always in [Python]. It's super easy, super quick written, super cheap and there are super libraries ... but you need some knowledge of this language.
+I write such little tools always in [Python]. It's super easy, super quick written,
+super cheap and there are super libraries ... but you need some knowledge of this language.
 
 
 The Files
 ---------
-### beadparam.py
+### examples/beadparam.py
 It's just a parameter setting file ... or an example how to use it.
 #### How to use it?
 Well, just setup your parameters. Size and impedance range must be specified.
-Normally you get to many results with this to settings. So you can limit the result set even more by specifing an inductance range.
+Normally you get to many results with this to settings. So you can limit the result
+set even more by specifing an inductance range.
 
 ```python
 
@@ -44,8 +54,12 @@ param = dict(
 
 ```
 
-### beadparts.py
-Make sure you have downloaded the zip files with the s-parameter data from the manufacturer you like. At the moment there are four vendors supported. Of course you can add more. Just put the zip files into a *sparam* subfolder. These files must be registered within this Python file. Just look how it was done. Not so diffucult ... hopefully.
+### ekbead/beadparts.py
+Make sure you have downloaded the zip files with the s-parameter data from the
+manufacturer you like. At the moment there are four vendors supported. Of course
+you can add more. Just put the zip files into a *sparam* subfolder. These files
+must be registered within this Python file. Just look how it was done. Not so
+diffucult ... hopefully.
 
 #### Supported Manufacturers
 - [Murata]
@@ -53,14 +67,16 @@ Make sure you have downloaded the zip files with the s-parameter data from the m
 - [Tayo Yuden]
 - [Würth]
 
-This script can download the s-parameter files by themself. Just execute and all files are placed into the *sparam* folder (created if not exists).
+This script can download the s-parameter files by themself. Just execute and all
+files are placed into the *sparam* folder (created if not exists). This should
+done automatically while setup.py runs.
 
 
-### beadselect.py
+### ekbead/beadselect.py
 The visualisation stuff
 
 
-### touchstone.py
+### ekbead/touchstone.py
 A quick 'n' dirty touchstone file reader.
 It's not proper done but should work most of the time.
 
@@ -83,8 +99,7 @@ and a graphical representation of the bead's data where |Z|, X and R are visible
 
 Notice
 ------
-- [Python] 2.7 or 3.x needed.
-- [Matplotlib] needed (pip install matplotlib).
+- [Python] >=2.7 needed.
 
 If you are not familiar with [Python] a better starting point is [Anaconda].
 [Anaconda] is Python with much more installed scientific libraries and therefore there are no installation hassles on Windows systems.
