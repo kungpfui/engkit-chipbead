@@ -5,7 +5,7 @@ import sys
 from distutils.core import setup
 from setuptools.command.install import install as _install
 
-_package = 'eekbead'
+_package = 'ekbead'
 
 
 class chipbead_data_install(_install):
