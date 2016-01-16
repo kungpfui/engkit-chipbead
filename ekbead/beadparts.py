@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# $Id$
 
 """
-List of chip ferrite beads.
+List of ferrite chip beads.
 """
 
 import os

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# $Id$
 
 """
 Quick n dirty touchstone file reader (.s2p only).

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# $Id$
 
 """The bead selecting algorithm implementation.
 
@@ -16,8 +14,8 @@ import math
 import cmath
 import zipfile
 import matplotlib.pyplot as plt
-from touchstone import Touchstone
-from beadparts import PARTS
+from .touchstone import Touchstone
+from .beadparts import PARTS
 
 
 class BeadData(object):

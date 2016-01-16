@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# $Id$
+
 
 """Example code to find some matching chip ferrite beads."""
 
-import eekbead as bead
+import ekbead as bead
 
 PARAM = dict(
     # 0201, 0402, 0603, 0805, 1206 (inch)
@@ -25,7 +24,7 @@ def main():
     bead.info(data)
 
     # graphical data to a window
-    bead.plot(data, frange=(1e6, 1e9), rmin=1.0)
+    bead.plot(data, frange=(1e6, 1e9), rmin=1.0, scale='loglog')
 
 
 if __name__ == "__main__":
