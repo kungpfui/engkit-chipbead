@@ -49,7 +49,7 @@ def _folder(zip_filename):
     """Subfolder to use for s-parameter zip files.
     @param zip_filename  filename as string, must be an existing zip-file
     """
-    return os.path.join('sparam', zip_filename)
+    return os.path.join(os.path.dirname(__file__), 'sparam', zip_filename)
 
 
 PARTS = {
@@ -109,7 +109,7 @@ def _get_sparam():
                           filename_ext=os.path.splitext(os.path.basename(filepath))[0])
             try:
                 print("download '{}' ...".format(urlfmt['filename']))
-                _simple_dl(parts[fn].url.format(**urlfmt), filepath)
+                _simple_dl(PARTS[filepath].url.format(**urlfmt), filepath)
             except Exception as excptn:
                 print("error: {} @ '{}'".format(excptn, urlfmt['filename']))
 
