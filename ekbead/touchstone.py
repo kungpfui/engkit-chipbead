@@ -14,6 +14,14 @@ for point in ts:
 import re
 import cmath
 
+try:
+    # python 2.x
+    basestring
+except NameError:
+    # python 3
+    basestring = (str, bytes)
+
+
 class SPoint(object):
     """ Scattering paramter
 
@@ -111,7 +119,7 @@ class TouchstoneFormat(object):
         @param sparam_fmt   s-parameter file format as tuple or string.
                             = Touchstone's option line
         """
-        if isinstance(sparam_fmt, str):
+        if isinstance(sparam_fmt, basestring):
             sparam_fmt = sparam_fmt.lstrip('#').strip().split()
 
         v = []
