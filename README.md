@@ -64,8 +64,9 @@ diffucult ... hopefully.
 #### Supported Manufacturers
 - [Murata]
 - [TDK]
-- [Tayo Yuden]
+- [Taiyo Yuden]
 - [Würth]
+- [Samsung] (semi-automatic)
 
 This script can download the s-parameter files by themself. Just execute and all
 files are placed into the *sparam* folder (created if not exists). This should
@@ -108,8 +109,9 @@ If you are not familiar with [Python] a better starting point is [Anaconda].
 [INcompliance Magazine]: http://incompliancemag.com/article/all-ferrite-beads-are-not-created-equal-understanding-the-importance-of-ferrite-bead-material-behavior/
 [Murata]: http://www.murata.com/en-us/tool/sparameter/ferritebead/
 [TDK]: https://product.tdk.com/info/en/technicalsupport/tvcl/general/beads.html
-[Tayo Yuden]: http://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
-[Würth]: http://www.we-online.de/web/de/electronic_components/toolbox_pbs/S_Parameter_1.php
+[Taiyo Yuden]: http://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
+[Würth]: http://www.we-online.de/web/en/electronic_components/toolbox_pbs/S_Parameter_1.php
+[Samsung]: http://weblib.samsungsem.com/LCR_Web_Library.jsp?type=bead&lng=en_US
 [Python]: http://www.python.org
 [Matplotlib]: http://matplotlib.org/
 [Anaconda]: https://www.continuum.io
