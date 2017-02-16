@@ -192,17 +192,14 @@ def eng_fmt(value, fmt='.3'):
     if value is None:
         return str(None)
 
-    n = 0
-    while not 1.0 <= abs(value) < 1000.0:
-        if abs(value) >= 1000.0:
-            value *= 1e-3
-            n += 3
-        else:
-            value *= 1e3
-            n -= 3
+    prefix = 'yzafpnum kMGTPEZY'
+    n = prefix.index(' ')
+    while not (1.0 <= abs(value) < 1000.0) and 0 < n < len(prefix):
+        scale = -1 if abs(value) < 1.0 else +1
+        n += scale
+        value *= 10.0 ** float(scale * -3)
 
-    expo = {15:'P', 12:'T', 9:'G', 6:'M', 3:'k', 0:'', -3:'m', -6:'u', -9:'n', -12:'p', -15:'f'}
-    return ('{:%sf}{}' % fmt).format(value, expo[n])
+    return ('{:%sf}{}' % fmt).format(value, prefix[n].strip())
 
 
 def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
@@ -214,6 +211,8 @@ def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
     @param scale       diagram scaling, possible values are [ loglog | linlog | loglin | linlin ]
     """
 
+    def scale_mpl(s): return dict(lin='linear').get(s, s)
+
     fig = plt.figure()
     fig.canvas.set_window_title('Electronics Engineering Kit - SMD Chip Bead Selector')
     cols = int(math.sqrt(len(bead_data)))
@@ -221,8 +220,8 @@ def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
         axis = plt.subplot((len(bead_data) + cols-1) / cols, cols, 1+i)
         axis.grid()
 
-        axis.set_xscale(scale[:3])
-        axis.set_yscale(scale[3:])
+        axis.set_xscale(scale_mpl(scale[:3]))
+        axis.set_yscale(scale_mpl(scale[3:]))
         axis.plot(bdata.MHz, bdata.R, 'b')
         axis.plot(bdata.MHz, bdata.X, 'g')
         axis.plot(bdata.MHz, bdata.Z, 'r')

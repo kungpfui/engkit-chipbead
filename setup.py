@@ -12,8 +12,7 @@ class chipbead_data_install(_install):
     def run(self):
         _install.run(self)
         from subprocess import call
-        call([sys.executable, 'beadparts.py'],
-             cwd=self.install_lib + _package)
+        call([sys.executable, 'beadparts.py'], cwd=self.install_lib + _package)
 
 
 with open(os.path.join(_package, '__init__.py')) as fid:

@@ -23,10 +23,12 @@ MANUFACTURER = dict(
         NameConv('http://www.murata.com/~/media/webrenewal/tool/sparameter/ferritebeads/{filename_ext}.ashx?la=en-us',
                  r'.*(?P<size_code>\d{2})[A-Z]{2}(?P<imp_code>\d{3}).*',
                  {'0201': '03', '0402': '15', '0603': '18', '0805': '21', '1206': '31'}),
-    #~ samsung=\
-        #~ NameConv(None,
-                 #~ r'.*(?P<size_code>\d{2})[A-Z](?P<imp_code>\d{3}).*',
-                 #~ {'0603': '10'}),
+    # collection of samsung sparam files from their library. Can't get them as zip archive.
+    # http://weblib.samsungsem.com/LCR_Web_Library.jsp?type=bead&lng=en_US
+    samsung=\
+        NameConv('https://github.com/kungpfui/engkit-chipbead/sparam/{filename}',
+                 r'.*(?P<size_code>\d{2})[A-Z](?P<imp_code>\d{3}).*',
+                 {'0402': '05', '0603': '10', '0805': '21'}),
     tayo_yuden=\
         NameConv('http://www.yuden.co.jp/productdata/spara/{filename}',
                  r'.*(?P<size_code>\d{4})_.*(?P<imp_code>\d{3}).*',
@@ -77,14 +79,15 @@ PARTS = {
     _folder('WE_CBF_0805.zip'): MANUFACTURER['wuerth'],
 
     # Samsung parts, http://weblib.samsungsem.com/LCR_Web_Library.jsp?type=bead&lng=en_US
-    #~ _folder('CIM10_Series.zip'): MANUFACTURER['samsung'],
+    _folder('CIM05_Series.zip'): MANUFACTURER['samsung'],
+    _folder('CIM10_Series.zip'): MANUFACTURER['samsung'],
+    _folder('CIM21_Series.zip'): MANUFACTURER['samsung'],
 }
-
 
 
 #------------------------------------------------------------------------------
 def _simple_dl(url, filepath):
-    """Very simple download function without excpetion handlers
+    """Very simple download function without exception handlers
 
     @param url       URL as string
     @param filepath  local filepath as string
@@ -114,3 +117,4 @@ def _get_sparam():
 
 if __name__ == "__main__":
     _get_sparam()
+
