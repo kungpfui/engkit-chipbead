@@ -116,4 +116,4 @@ If you are not familiar with [Python] a better starting point is [Anaconda].
 [Matplotlib]: http://matplotlib.org/
 [Anaconda]: https://www.continuum.io
 
-[pyBeadSelector.png]: https://github.com/kungpfui/pyBeadSelector/blob/master/images/pyBeadSelector.png "Bead Selector Window"
+[pyBeadSelector.png]: https://github.com/kungpfui/engkit-chipbead/blob/master/images/pyBeadSelector.png "Bead Selector Window"

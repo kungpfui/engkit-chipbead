@@ -96,7 +96,7 @@ class BeadData(object):
 
         for i, z in enumerate(self._z):
             if z.imag > z.real:
-                # it's possible that at low frequency X is smaler than R, so ...
+                # it's possible that at low frequency X is smaller than R, so ...
                 x_was_above_r = True
 
             if x_was_above_r and z.real >= z.imag:
@@ -211,6 +211,7 @@ def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
     @param scale       diagram scaling, possible values are [ loglog | linlog | loglin | linlin ]
     """
 
+    # matplotlib does not know 'lin'
     def scale_mpl(s): return dict(lin='linear').get(s, s)
 
     fig = plt.figure()

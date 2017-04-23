@@ -26,7 +26,7 @@ MANUFACTURER = dict(
     # collection of samsung sparam files from their library. Can't get them as zip archive.
     # http://weblib.samsungsem.com/LCR_Web_Library.jsp?type=bead&lng=en_US
     samsung=\
-        NameConv('https://cdn.rawgit.com/kungpfui/engkit-chipbead/master/sparam/{filename}',
+        NameConv('https://github.com/kungpfui/engkit-chipbead/raw/master/sparam/{filename}',
                  r'.*(?P<size_code>\d{2})[A-Z](?P<imp_code>\d{3}).*',
                  {'0402': '05', '0603': '10', '0805': '21'}),
     tayo_yuden=\
