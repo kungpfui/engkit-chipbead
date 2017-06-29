@@ -111,6 +111,10 @@ class BeadData(object):
 
                 return freq_intrplt
 
+    def max_Z(self):
+        z_max = max(self.Z)
+        return z_max, self._f[self.Z.index(z_max)]
+
 
 def code2imp(code):
     """Most parts have it's value encoded with three decimals numbers
@@ -254,11 +258,15 @@ def info(bead_data):
     """
 
     for bdata in bead_data:
-        print('{:<20}: L = {}H, X=R @ {}Hz, Z = {:>.2f} @1MHz, {:>.2f} @10MHz, {:>.2f} @100MHz'.format(
+        max_z, max_z_freq = bdata.max_Z()
+        print('{:<20}: L = {:>8}H, X=R @ {:>7}Hz, Zmax = {:>6.1f} @ {:>6}Hz, Z = {:>.1f} @1MHz, {:>.1f} @10MHz, {:>.1f} @100MHz'.format(
             bdata.name,
             eng_fmt(bdata.L(1e6)),
             eng_fmt(bdata.xpoint(), '.2'),
+            max_z,
+            eng_fmt(max_z_freq, '.1'),
             abs(bdata.z(1e6)),
             abs(bdata.z(10e6)),
             abs(bdata.z(100e6)))
-             )
+        )
+
