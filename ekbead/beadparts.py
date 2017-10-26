@@ -54,9 +54,9 @@ def _folder(zip_filename):
 
 PARTS = {
     # murata parts, http://www.murata.com/en-us/tool/sparameter/ferritebead
-    _folder('blm15_s_v11.zip'): MANUFACTURER['murata'],
-    _folder('blm18_s_v11.zip'): MANUFACTURER['murata'],
-    _folder('blm21_s_v11.zip'): MANUFACTURER['murata'],
+    _folder('blm15_s_v12.zip'): MANUFACTURER['murata'],
+    _folder('blm18_s_v12.zip'): MANUFACTURER['murata'],
+    _folder('blm21_s_v12.zip'): MANUFACTURER['murata'],
 
     # TDK parts, https://product.tdk.com/info/en/technicalsupport/tvcl/general/beads.html
     _folder('beads_commercial_signal_mmz1005_spara.zip'):   MANUFACTURER['tdk'],
