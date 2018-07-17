@@ -8,19 +8,18 @@ List of ferrite chip beads.
 import os
 from collections import namedtuple
 try:
-    from urllib.request import urlopen
+    from urllib.request import Request, urlopen
 except ImportError:
     # python 2.x
-    from urllib import urlopen
+    from urllib2 import Request, urlopen
 
 
 ## naming conventions of the manufacturer
 NameConv = namedtuple('NameConv', ['url', 'regex_fn', 'scmap'])
 
-
 MANUFACTURER = dict(
     murata=\
-        NameConv('http://www.murata.com/~/media/webrenewal/tool/sparameter/ferritebeads/{filename_ext}.ashx?la=en-us',
+        NameConv('https://www.murata.com/~/media/webrenewal/tool/sparameter/ferritebeads/{filename_ext}.ashx?la=en-us',
                  r'.*(?P<size_code>\d{2})[A-Z]{2}(?P<imp_code>\d{3}).*',
                  {'0201': '03', '0402': '15', '0603': '18', '0805': '21', '1206': '31'}),
     # collection of samsung sparam files from their library. Can't get them as zip archive.
@@ -30,7 +29,7 @@ MANUFACTURER = dict(
                  r'.*(?P<size_code>\d{2})[A-Z](?P<imp_code>\d{3}).*',
                  {'0402': '05', '0603': '10', '0805': '21'}),
     tayo_yuden=\
-        NameConv('http://www.yuden.co.jp/productdata/spara/{filename}',
+        NameConv('https://www.yuden.co.jp/productdata/spara/{filename}',
                  r'.*(?P<size_code>\d{4})_.*(?P<imp_code>\d{3}).*',
                  {'0402': '1005', '0603': '1608', '0805': '2012'}),
     tdk=\
@@ -53,10 +52,10 @@ def _folder(zip_filename):
 
 
 PARTS = {
-    # murata parts, http://www.murata.com/en-us/tool/sparameter/ferritebead
-    _folder('blm15_s_v12.zip'): MANUFACTURER['murata'],
-    _folder('blm18_s_v12.zip'): MANUFACTURER['murata'],
-    _folder('blm21_s_v12.zip'): MANUFACTURER['murata'],
+    # murata parts, https://www.murata.com/en-us/tool/sparameter/ferritebead
+    _folder('blm15_s_v13.zip'): MANUFACTURER['murata'],
+    _folder('blm18_s_v13.zip'): MANUFACTURER['murata'],
+    _folder('blm21_s_v13.zip'): MANUFACTURER['murata'],
 
     # TDK parts, https://product.tdk.com/info/en/technicalsupport/tvcl/general/beads.html
     _folder('beads_commercial_signal_mmz1005_spara.zip'):   MANUFACTURER['tdk'],
@@ -68,7 +67,7 @@ PARTS = {
     _folder('beads_commercial_signal_mmz2012_spara.zip'):   MANUFACTURER['tdk'],
     _folder('beads_commercial_power_mpz2012_spara.zip'):   MANUFACTURER['tdk'],
 
-    # Tayo Yuden parts, http://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
+    # Tayo Yuden parts, https://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
     _folder('BK.zip'):  MANUFACTURER['tayo_yuden'],
     _folder('BKP.zip'): MANUFACTURER['tayo_yuden'],
     _folder('FBM.zip'): MANUFACTURER['tayo_yuden'],
@@ -92,8 +91,9 @@ def _simple_dl(url, filepath):
     @param url       URL as string
     @param filepath  local filepath as string
     """
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})  # fake agent
     with open(filepath, 'wb') as file_:
-        file_.write(urlopen(url).read())
+        file_.write(urlopen(req).read())
 
 
 def _get_sparam():
