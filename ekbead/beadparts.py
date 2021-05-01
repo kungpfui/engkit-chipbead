@@ -33,7 +33,7 @@ MANUFACTURER = dict(
                  r'.*(?P<size_code>\d{4})_.*(?P<imp_code>\d{3}).*',
                  {'0402': '1005', '0603': '1608', '0805': '2012'}),
     tdk=\
-        NameConv('https://product.tdk.com/info/tvcl/spara/{filename}',
+        NameConv('https://product.tdk.com/system/files/dam/technicalsupport/tvcl/spara/{filename}',
                  r'.*(?P<size_code>\d{4})[A-Z](?P<imp_code>\d{3}).*',
                  {'0402': '1005', '0603': '1608', '0805': '2012'}),
     wuerth=\
@@ -53,24 +53,27 @@ def _folder(zip_filename):
 
 PARTS = {
     # murata parts, https://www.murata.com/en-us/tool/sparameter/ferritebead
-    _folder('blm15_s_v13.zip'): MANUFACTURER['murata'],
-    _folder('blm18_s_v13.zip'): MANUFACTURER['murata'],
-    _folder('blm21_s_v13.zip'): MANUFACTURER['murata'],
+    _folder('blm15_s_v14.zip'): MANUFACTURER['murata'],
+    _folder('blm18_s_v14.zip'): MANUFACTURER['murata'],
+    _folder('blm21_s_v14.zip'): MANUFACTURER['murata'],
 
-    # TDK parts, https://product.tdk.com/info/en/technicalsupport/tvcl/general/beads.html
+    # TDK parts, https://product.tdk.com/en/technicalsupport/tvcl/general/beads.html
     _folder('beads_commercial_signal_mmz1005_spara.zip'):   MANUFACTURER['tdk'],
+    _folder('beads_commercial_signal_mmz1005-h_spara.zip'): MANUFACTURER['tdk'],
     _folder('beads_commercial_signal_mmz1005-e_spara.zip'): MANUFACTURER['tdk'],
     _folder('beads_commercial_signal_mmz1005-v_spara.zip'): MANUFACTURER['tdk'],
-    _folder('beads_commercial_power_mpz1005_spara.zip'):    MANUFACTURER['tdk'],
     _folder('beads_commercial_signal_mmz1608_spara.zip'):   MANUFACTURER['tdk'],
-    _folder('beads_commercial_power_mpz1608_spara.zip'):    MANUFACTURER['tdk'],
     _folder('beads_commercial_signal_mmz2012_spara.zip'):   MANUFACTURER['tdk'],
+    _folder('beads_commercial_power_mpz1005_spara.zip'):    MANUFACTURER['tdk'],
+    _folder('beads_commercial_power_mpz1608_spara.zip'):    MANUFACTURER['tdk'],
     _folder('beads_commercial_power_mpz2012_spara.zip'):   MANUFACTURER['tdk'],
 
     # Tayo Yuden parts, https://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
     _folder('BK.zip'):  MANUFACTURER['tayo_yuden'],
     _folder('BKP.zip'): MANUFACTURER['tayo_yuden'],
     _folder('FBM.zip'): MANUFACTURER['tayo_yuden'],
+    # _folder('FBM_8.zip'): MANUFACTURER['tayo_yuden'], # automotive
+    _folder('FBT.zip'): MANUFACTURER['tayo_yuden'],
 
     # Würth parts, http://www.we-online.de/web/en/electronic_components/toolbox_pbs/S_Parameter_1.php
     _folder('WE_CBF_0402.zip'): MANUFACTURER['wuerth'],
