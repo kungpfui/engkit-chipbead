@@ -222,7 +222,7 @@ def plot(bead_data, frange=(1e6, 1e9), rmin=1.0, scale='loglog'):
     fig.canvas.set_window_title('Electronics Engineering Kit - SMD Chip Bead Selector')
     cols = int(math.sqrt(len(bead_data)))
     for i, bdata in enumerate(bead_data):
-        axis = plt.subplot((len(bead_data) + cols-1) / cols, cols, 1+i)
+        axis = plt.subplot((len(bead_data) + cols-1) // cols, cols, 1+i)
         axis.grid()
 
         axis.set_xscale(scale_mpl(scale[:3]))
