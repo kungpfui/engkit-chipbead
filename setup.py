@@ -2,8 +2,8 @@
 
 import os
 import sys
-from distutils.core import setup
 from setuptools.command.install import install as _install
+from distutils.core import setup
 
 _package = 'ekbead'
 

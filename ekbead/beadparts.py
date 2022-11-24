@@ -19,7 +19,7 @@ NameConv = namedtuple('NameConv', ['url', 'regex_fn', 'scmap'])
 
 MANUFACTURER = dict(
     murata=\
-        NameConv('https://www.murata.com/~/media/webrenewal/tool/sparameter/ferritebeads/{filename_ext}.ashx?la=en-us',
+        NameConv('https://www.murata.com/-/media/webrenewal/tool/sparameter/ferritebeads/{filename_ext}.ashx?la=en',
                  r'.*(?P<size_code>\d{2})[A-Z]{2}(?P<imp_code>\d{3}).*',
                  {'0201': '03', '0402': '15', '0603': '18', '0805': '21', '1206': '31'}),
     # collection of samsung sparam files from their library. Can't get them as zip archive.
@@ -30,14 +30,14 @@ MANUFACTURER = dict(
                  {'0402': '05', '0603': '10', '0805': '21'}),
     tayo_yuden=\
         NameConv('https://www.yuden.co.jp/productdata/spara/{filename}',
-                 r'.*(?P<size_code>\d{4})_.*(?P<imp_code>\d{3}).*',
+                 r'.*(?P<size_code>\d{4})\d{2}[A-Z](?P<imp_code>\d{3}).*',
                  {'0402': '1005', '0603': '1608', '0805': '2012'}),
     tdk=\
         NameConv('https://product.tdk.com/system/files/dam/technicalsupport/tvcl/spara/{filename}',
                  r'.*(?P<size_code>\d{4})[A-Z](?P<imp_code>\d{3}).*',
                  {'0402': '1005', '0603': '1608', '0805': '2012'}),
     wuerth=\
-        NameConv('http://www.we-online.de/web/en/index.php/download/media/07_electronic_components/download_center_1/s-parameter/{filename}',
+        NameConv('https://www.we-online.de/web/en/index.php/download/media/07_electronic_components/download_center_1/s-parameter/{filename}',
                  r'^(?P<size_code>\d{7}).*',
                  {'0402': '7427927', '0603': '7427926', '0805': '7427920'}),
 )
@@ -53,9 +53,10 @@ def _folder(zip_filename):
 
 PARTS = {
     # murata parts, https://www.murata.com/en-us/tool/sparameter/ferritebead
-    _folder('blm15_s_v14.zip'): MANUFACTURER['murata'],
-    _folder('blm18_s_v14.zip'): MANUFACTURER['murata'],
-    _folder('blm21_s_v14.zip'): MANUFACTURER['murata'],
+    _folder('blm03-s-v15.zip'): MANUFACTURER['murata'],
+    _folder('blm15-s-v15.zip'): MANUFACTURER['murata'],
+    _folder('blm18-s-v15.zip'): MANUFACTURER['murata'],
+    _folder('blm21-s-v15.zip'): MANUFACTURER['murata'],
 
     # TDK parts, https://product.tdk.com/en/technicalsupport/tvcl/general/beads.html
     _folder('beads_commercial_signal_mmz1005_spara.zip'):   MANUFACTURER['tdk'],
@@ -69,11 +70,9 @@ PARTS = {
     _folder('beads_commercial_power_mpz2012_spara.zip'):   MANUFACTURER['tdk'],
 
     # Tayo Yuden parts, https://www.yuden.co.jp/ut/product/support/pdf_spice_spara/
-    _folder('BK.zip'):  MANUFACTURER['tayo_yuden'],
-    _folder('BKP.zip'): MANUFACTURER['tayo_yuden'],
-    _folder('FBM.zip'): MANUFACTURER['tayo_yuden'],
-    # _folder('FBM_8.zip'): MANUFACTURER['tayo_yuden'], # automotive
-    _folder('FBT.zip'): MANUFACTURER['tayo_yuden'],
+    #_folder('BK.zip'):  MANUFACTURER['tayo_yuden'], # phaseout
+    #_folder('BKP.zip'): MANUFACTURER['tayo_yuden'], # phaseout
+    _folder('LSMC_LSMG.zip'): MANUFACTURER['tayo_yuden'],
 
     # Würth parts, http://www.we-online.de/web/en/electronic_components/toolbox_pbs/S_Parameter_1.php
     _folder('WE_CBF_0402.zip'): MANUFACTURER['wuerth'],
