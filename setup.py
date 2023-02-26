@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -21,29 +21,27 @@ with open(os.path.join(_package, '__init__.py')) as fid:
             VERSION = line.strip().split()[-1][1:-1]
             break
 
-
 LONG_DESCRIPTION = """
 engkit-chipbead is an open source ferrite chip bead comparison and
 selection tool implemented in the Python programming language.
 """
 
 setup(name='engkit-chipbead',
-    version=VERSION,
-    author='Stefan Schwendeler',
-    author_email='kungpfui@users.noreply.github.com',
-    url='https://github.com/kungpfui/engkit-chipbead',
-    description='SMD Chip Bead Selector',
-    long_description=LONG_DESCRIPTION,
-    license='GPL2.1',
+      version=VERSION,
+      author='Stefan Schwendeler',
+      author_email='kungpfui@users.noreply.github.com',
+      url='https://github.com/kungpfui/engkit-chipbead',
+      description='SMD Chip Bead Selector',
+      long_description=LONG_DESCRIPTION,
+      license='GPL2.1',
 
-    install_requires = [
-        'numpy',
-        'matplotlib',
-        ],
+      install_requires=[
+          'numpy',
+          'matplotlib',
+      ],
 
-    packages=[_package],
+      packages=[_package],
 
-    cmdclass={'install': chipbead_data_install},
+      cmdclass={'install': chipbead_data_install},
 
-    )
-
+      )

@@ -11,19 +11,19 @@ PARAM = dict(
     # |Z| @ 100MHz
     impedance=(270, 360),
     # optional, L @ 1MHz, just uncomment
-    #~ inductance=(2e-6, 3e-6)
+    inductance=(2e-6, 3e-6)
     )
 
 
 def main():
-    "let it run"
+    """let it run"""
     data = bead.filescan(**PARAM)
 
-    # informations goes to stdout
+    # information goes to stdout
     bead.info(data)
 
     # graphical data to a window
-    bead.plot(data, frange=(1e6, 1e9), rmin=1.0, scale='loglog')
+    bead.plot(data, frange=(1e6, 1e9), r_min=1.0, scale='loglog')
 
 
 if __name__ == "__main__":

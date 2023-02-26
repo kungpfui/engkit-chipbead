@@ -8,7 +8,6 @@ Usage:
 ts = Touchstone('blub.s2p')
 for point in ts:
     print(point)
-
 """
 
 import re
@@ -44,12 +43,11 @@ class SPoint(object):
 
         # value pairs (s11, s21, s12, s22)
         pair = self.fmt.convert
-        self.s = tuple([pair(*arg)  for arg in zip(args[1::2], args[2::2])])
+        self.s = tuple([pair(*arg) for arg in zip(args[1::2], args[2::2])])
 
         # s1p or s2p file?
         self.ports = 1 if len(self.s) == 1 else 2
         self._z_term = 0.0 if self.ports == 1 else self.fmt.z0
-
 
     @property
     def Z(self):
@@ -80,12 +78,15 @@ class SPoint(object):
     @property
     def s11(self):
         return self.s[0]
+
     @property
     def s21(self):
         return self.s[1]
+
     @property
     def s12(self):
         return self.s[2]
+
     @property
     def s22(self):
         return self.s[3]
@@ -99,19 +100,19 @@ class TouchstoneFormat(object):
 
     # options mapping
     mapping = (
-        {'HZ':1.0, 'KHZ':1E3, 'MHZ':1E6, 'GHZ':1E9},
+        {'HZ': 1.0, 'KHZ': 1E3, 'MHZ': 1E6, 'GHZ': 1E9},
         # at the moment only s-parameters are supported (no Z, Y, ....)
-        {'S':True},
+        {'S': True},
         {
             # real-imaganyry, s11-re, s11-im, s21, s12, s22
-            'RI':complex,
+            'RI': complex,
             # magnitude angle, |s11|, <s11, s21, s12, s22
-            'MA':lambda magnitude, angle: cmath.rect(magnitude, angle * (cmath.pi / 180.0)),
-            'DB':lambda magnitude, angle: cmath.rect(10.0**(magnitude/20.0), angle * (cmath.pi / 180.0)),
+            'MA': lambda magnitude, angle: cmath.rect(magnitude, angle * (cmath.pi / 180.0)),
+            'DB': lambda magnitude, angle: cmath.rect(10.0 ** (magnitude / 20.0), angle * (cmath.pi / 180.0)),
         },
-        {'R':True},
+        {'R': True},
         float
-        )
+    )
 
     def __init__(self, sparam_fmt):
         """c'tor
@@ -136,7 +137,7 @@ class TouchstoneFormat(object):
         self.fs = v[0]
         # must be true
         assert v[1]
-        # the convertion function to use to convert into complex s-parameter
+        # the conversion function to use to convert into complex s-parameter
         self.convert = v[2]
         # must be true
         assert v[3]
@@ -145,7 +146,8 @@ class TouchstoneFormat(object):
 
 
 class Touchstone(list):
-    """ Quick n dirty touchstone file reader (.s2p only).
+    """
+    Quick n dirty touchstone file reader (.s2p only).
 
     Every s-parameter point is stored as list of complex s-parameter values.
     Magnitude-Angle value-pairs are converted into real-imaginary value-pairs.
@@ -190,12 +192,11 @@ class Touchstone(list):
         return self
 
     def __getitem__(self, idx):
-        "get item by index"
+        """get item by index"""
         self._parse()
         return list.__getitem__(self, idx)
 
     def __iter__(self):
-        "iterator"
+        """iterator"""
         self._parse()
         return list.__iter__(self)
-
